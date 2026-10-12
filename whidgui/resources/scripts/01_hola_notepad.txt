@@ -1,0 +1,12 @@
+REM Script de prueba BENIGNO: abre el Bloc de notas y escribe un saludo.
+REM Objetivo: comprobar que la inyeccion de teclado funciona. Sin dano alguno.
+DELAY 1500
+GUI r
+DELAY 500
+STRING notepad
+ENTER
+DELAY 1200
+STRING Hola desde el Cactus WHID :)
+ENTER
+STRING Esto es una prueba benigna de inyeccion de teclado.
+ENTER

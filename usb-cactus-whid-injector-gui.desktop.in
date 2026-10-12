@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=USB Cactus WHID Injector GUI
+GenericName=Cactus WHID / HID
+Comment=Gestión del Cactus WHID (ESP8266 / ESPloitV2)
+Exec=__EXEC__
+Icon=__ICON__
+Terminal=false
+Categories=Utility;Security;System;
+Keywords=whid;cactus;esp8266;esploit;duckyscript;hid;badusb;
+StartupNotify=true
