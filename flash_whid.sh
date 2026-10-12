@@ -183,11 +183,13 @@ do_flashesp() {
     sleep 2
 
     info "Paso 3/4 — flasheando la ESP ($ESP_BIN)…"
-    if _esptool_write "$ESP_BAUD"; then ok "ESP8266 flasheada."; sleep 2; return 0; fi
-    warn "Sin respuesta. Reintento a 74880 baud…"
-    if _esptool_write 74880; then ok "ESP8266 flasheada."; sleep 2; return 0; fi
-    warn "Reintento sin auto-reset…"
+    # En el WHID la ESP ya la deja en bootloader el passthrough, así que el
+    # auto-reset de esptool estorba: 'no_reset' es el que funciona. Se prueba 1º.
     if _esptool_write "$ESP_BAUD" --before no_reset; then ok "ESP8266 flasheada."; sleep 2; return 0; fi
+    warn "Reintento con auto-reset…"
+    if _esptool_write "$ESP_BAUD"; then ok "ESP8266 flasheada."; sleep 2; return 0; fi
+    warn "Reintento a 74880 baud sin auto-reset…"
+    if _esptool_write 74880 --before no_reset; then ok "ESP8266 flasheada."; sleep 2; return 0; fi
 
     err "esptool no consigue hablar con la ESP."
     err "Prueba: desconecta y reconecta el WHID, vuelve a lanzar 'flashesp',"
