@@ -79,6 +79,28 @@ local), registra el icono y crea el acceso directo en el **menú de aplicaciones
 4. Escribe tus payloads en la pestaña **DuckyScript**, guárdalos y súbelos desde
    el panel web del dispositivo.
 
+## Flasheo automático (script)
+
+En el Cactus WHID la ESP8266 no se flashea directa: el USB es el del 32u4, que
+debe cargar primero un *passthrough*. El script **`flash_whid.sh`** automatiza
+los cuatro pasos con `arduino-cli` (sin abrir el IDE):
+
+```bash
+./flash_whid.sh all          # setup + passthrough + compilar ESP + flashear + restaurar 32u4
+# o por pasos:
+./flash_whid.sh setup        # instala arduino-cli, cores, librerías y clona ESPloitV2
+./flash_whid.sh passthrough  # sube el passthrough al 32u4
+./flash_whid.sh buildesp     # compila ESP_Code -> .bin
+./flash_whid.sh flashesp     # flashea la ESP con esptool
+./flash_whid.sh restore      # firmware final del 32u4
+```
+
+Variables útiles: `PORT`, `ESP_BAUD`, `FQBN_ESP`, `FQBN_32U4`. ESPloitV2 es de
+2017 y fija versiones antiguas (core ESP8266 2.3.0, ArduinoJson 5.11.0); el
+script las instala para que compile. Si la compilación de la ESP falla por la
+opción de tamaño de flash, mira las opciones válidas con
+`./flash_whid.sh menuopts` y ajusta `FQBN_ESP`.
+
 ## Limitaciones
 
 - Es un **gestor/editor**, no un framework de ataque: no genera ni incluye
