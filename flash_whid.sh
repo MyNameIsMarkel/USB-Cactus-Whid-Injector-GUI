@@ -30,7 +30,10 @@ set -euo pipefail
 # ----------------------------- configuración ------------------------------
 PORT="${PORT:-/dev/ttyACM0}"
 ESP_BAUD="${ESP_BAUD:-115200}"
-FQBN_ESP="${FQBN_ESP:-esp8266:esp8266:generic:eesz=4M3M}"
+# Vacío = autodetectar la opción de tamaño de flash según el core instalado
+# (en el core 2.3.0 es 'FlashSize', en los nuevos 'eesz'). Puedes forzarlo:
+#   FQBN_ESP=esp8266:esp8266:generic:FlashSize=4M3M
+FQBN_ESP="${FQBN_ESP:-}"
 FQBN_32U4="${FQBN_32U4:-arduino:avr:LilyPadUSB}"
 
 WORKDIR="${WORKDIR:-$HOME/.whidgui/esploit}"
@@ -134,12 +137,26 @@ do_passthrough() {
     sleep 2
 }
 
+flash_opt() {
+    # Devuelve la opción de tamaño de flash correcta para el core instalado.
+    local d
+    d="$("$ACLI" board details --fqbn esp8266:esp8266:generic 2>/dev/null || true)"
+    if   grep -qi "eesz"     <<<"$d"; then echo "eesz=4M3M"
+    elif grep -qi "FlashSize" <<<"$d"; then echo "FlashSize=4M3M"
+    else echo ""; fi
+}
+
 do_buildesp() {
     local sk="$REPO_DIR/source/ESP_Code"
     [[ -d "$sk" ]] || { err "No encuentro $sk. Ejecuta primero: $0 setup"; return 1; }
-    info "Paso 2/4 — compilando ESP_Code ($FQBN_ESP)…"
+    local fqbn="$FQBN_ESP"
+    if [[ -z "$fqbn" ]]; then
+        local opt; opt="$(flash_opt)"
+        fqbn="esp8266:esp8266:generic${opt:+:$opt}"
+    fi
+    info "Paso 2/4 — compilando ESP_Code ($fqbn)…"
     mkdir -p "$ESP_BUILD"
-    "$ACLI" compile --fqbn "$FQBN_ESP" --output-dir "$ESP_BUILD" "$sk"
+    "$ACLI" compile --fqbn "$fqbn" --output-dir "$ESP_BUILD" "$sk"
     local bin
     bin="$(ls -1 "$ESP_BUILD"/*.bin 2>/dev/null | head -1 || true)"
     [[ -n "$bin" ]] || { err "No se generó el .bin. Revisa los errores de compilación."; return 1; }
