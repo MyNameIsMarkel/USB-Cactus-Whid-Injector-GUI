@@ -110,8 +110,9 @@ do_setup() {
     "$ACLI" core install arduino:avr
     "$ACLI" core install "esp8266:esp8266@$ESP_CORE_VER"
 
-    info "Instalando librerías (ArduinoJson $ARDUINOJSON_VER + FTP bbx10)…"
+    info "Instalando librerías (ArduinoJson $ARDUINOJSON_VER + FTP bbx10 + Keyboard/Mouse)…"
     "$ACLI" lib install "ArduinoJson@$ARDUINOJSON_VER"
+    "$ACLI" lib install Keyboard Mouse
     local tmpzip="$WORKDIR/ftp_bbx10.zip"
     mkdir -p "$WORKDIR"
     curl -fsSL "$FTP_ZIP_URL" -o "$tmpzip"
@@ -163,17 +164,35 @@ do_buildesp() {
     ok "Binario de la ESP generado: $bin"
 }
 
+_esptool_write() {   # $1 = baud ; $2.. = flags globales extra
+    local baud="$1"; shift
+    "${ESPTOOL[@]}" --chip esp8266 --port "$PORT" --baud "$baud" "$@" \
+        write_flash --flash_size detect 0x00000 "$ESP_BIN"
+}
+
 do_flashesp() {
     check_port || return 1
     detect_esptool
-    local bin
-    bin="$(ls -1 "$ESP_BUILD"/*.bin 2>/dev/null | head -1 || true)"
-    [[ -n "$bin" ]] || { err "No hay .bin. Ejecuta antes: $0 buildesp"; return 1; }
-    info "Paso 3/4 — flasheando la ESP con esptool ($bin)…"
-    "${ESPTOOL[@]}" --chip esp8266 --port "$PORT" --baud "$ESP_BAUD" \
-        write_flash --flash_size detect 0x00000 "$bin"
-    ok "ESP8266 flasheada."
+    ESP_BIN="$(ls -1 "$ESP_BUILD"/*.bin 2>/dev/null | head -1 || true)"
+    [[ -n "$ESP_BIN" ]] || { err "No hay .bin. Ejecuta antes: $0 buildesp"; return 1; }
+
+    # La ESP solo acepta flasheo si el passthrough acaba de ponerla en bootloader,
+    # así que lo refrescamos justo ahora (el 32u4 se reinicia en modo programación).
+    info "Refrescando el passthrough antes de flashear…"
+    do_passthrough
     sleep 2
+
+    info "Paso 3/4 — flasheando la ESP ($ESP_BIN)…"
+    if _esptool_write "$ESP_BAUD"; then ok "ESP8266 flasheada."; sleep 2; return 0; fi
+    warn "Sin respuesta. Reintento a 74880 baud…"
+    if _esptool_write 74880; then ok "ESP8266 flasheada."; sleep 2; return 0; fi
+    warn "Reintento sin auto-reset…"
+    if _esptool_write "$ESP_BAUD" --before no_reset; then ok "ESP8266 flasheada."; sleep 2; return 0; fi
+
+    err "esptool no consigue hablar con la ESP."
+    err "Prueba: desconecta y reconecta el WHID, vuelve a lanzar 'flashesp',"
+    err "y si persiste, baja ESP_BAUD=9600 o revisa el cable/puerto (dmesg | tail)."
+    return 1
 }
 
 do_restore() {
@@ -181,6 +200,7 @@ do_restore() {
     local sk="$REPO_DIR/source/Arduino_32u4_code"
     [[ -d "$sk" ]] || sk="$REPO_DIR/source/Arduino_32u4_Code"
     [[ -d "$sk" ]] || { err "No encuentro el sketch del 32u4. Ejecuta: $0 setup"; return 1; }
+    "$ACLI" lib install Keyboard Mouse >/dev/null 2>&1 || true
     info "Paso 4/4 — subiendo el firmware final al 32u4…"
     "$ACLI" compile --fqbn "$FQBN_32U4" "$sk"
     "$ACLI" upload -p "$PORT" --fqbn "$FQBN_32U4" "$sk"
@@ -197,13 +217,11 @@ BANNER
     warn "Úsalo solo en hardware propio o con autorización explícita."
     echo
     do_setup
-    pause "Setup listo. Conecta el WHID y pulsa Enter para el PASO 1 (passthrough)…"
-    do_passthrough
-    pause "Pulsa Enter para el PASO 2 (compilar ESP_Code)…"
+    pause "Setup listo. Pulsa Enter para COMPILAR la ESP (no necesita el WHID aún)…"
     do_buildesp
-    pause "Pulsa Enter para el PASO 3 (flashear la ESP)…"
+    pause "Conecta el WHID y pulsa Enter para FLASHEAR la ESP (passthrough + esptool)…"
     do_flashesp
-    pause "Pulsa Enter para el PASO 4 (restaurar firmware del 32u4)…"
+    pause "Pulsa Enter para restaurar el firmware final del 32u4…"
     do_restore
     echo
     ok "¡Hecho! El WHID debería crear ahora su WiFi (SSID 'Exploit' / 'DotAgency')."
@@ -222,7 +240,7 @@ case "${1:-all}" in
     setup)       do_setup ;;
     passthrough) ensure_cli; do_passthrough ;;
     buildesp)    ensure_cli; do_buildesp ;;
-    flashesp)    do_flashesp ;;
+    flashesp)    ensure_cli; do_flashesp ;;
     restore)     ensure_cli; do_restore ;;
     menuopts)    menuopts ;;
     *) err "Opción desconocida: $1";
