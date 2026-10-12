@@ -1,0 +1,7 @@
+REM Script de prueba BENIGNO: abre una pagina web en el navegador por defecto.
+REM Usa el dialogo Ejecutar de Windows para lanzar una URL inofensiva.
+DELAY 1500
+GUI r
+DELAY 500
+STRING https://whid.ninja
+ENTER

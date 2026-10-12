@@ -1,0 +1,9 @@
+# Interfaz gráfica
+PyQt5>=5.15
+# Monitor serie
+pyserial>=3.5
+# Flasheo de la ESP8266
+esptool>=4.0
+
+# En Kali puedes instalar por apt en lugar de pip:
+#   sudo apt install python3-pyqt5 python3-serial esptool

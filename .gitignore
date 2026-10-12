@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.venv/
+/docs_screenshot.png
+/docs_ducky.png
