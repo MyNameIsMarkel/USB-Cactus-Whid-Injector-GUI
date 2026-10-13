@@ -1,18 +1,20 @@
 """Hoja de estilo (QSS) — tema oscuro con acento verde cactus."""
 
-BG = "#0f1510"
-PANEL = "#161e17"
-PANEL_2 = "#1e2a20"
-BORDER = "#2c3a2e"
-TEXT = "#e8f0e8"
-MUTED = "#8ca08f"
-ACCENT = "#5ac85a"       # verde cactus
+# Base neutra compartida con el GUI del Proxmark (misma familia visual);
+# aquí el acento es verde en lugar de azul.
+BG = "#0e141d"           # fondo general
+PANEL = "#151d2a"        # paneles
+PANEL_2 = "#1c2736"      # elementos elevados
+BORDER = "#2a3850"
+TEXT = "#e8eef7"
+MUTED = "#8a99b3"
+ACCENT = "#5ac85a"       # verde cactus (color principal de esta app)
 ACCENT_DK = "#46a846"
-CONSOLE_BG = "#0a0f0a"
-CONSOLE_TEXT = "#cdeccd"
-OK = "#5ac85a"
-BAD = "#ef5350"
-WARN = "#f5a623"
+CONSOLE_BG = "#0a0f17"
+CONSOLE_TEXT = "#c6edc6"   # verde claro para la consola
+OK = "#5ac85a"           # "conectado" en el verde principal
+BAD = "#ef5f5f"          # error
+WARN = "#f0a63a"         # aviso
 
 STYLESHEET = f"""
 * {{
@@ -53,15 +55,15 @@ QPushButton {{
     padding: 8px 12px;
     color: {TEXT};
 }}
-QPushButton:hover {{ border-color: {ACCENT}; background: #26352a; }}
-QPushButton:pressed {{ background: #2d3f31; }}
+QPushButton:hover {{ border-color: {ACCENT}; background: #233041; }}
+QPushButton:pressed {{ background: #2a3a4d; }}
 QPushButton:disabled {{ color: {MUTED}; background: {PANEL}; }}
 
 QPushButton#primary {{
-    background: {ACCENT}; color: #07130a; font-weight: 700; border: none;
+    background: {ACCENT}; color: #06120a; font-weight: 700; border: none;
 }}
 QPushButton#primary:hover {{ background: {ACCENT_DK}; }}
-QPushButton#primary:disabled {{ background: #2f4a33; color: #6f8a74; }}
+QPushButton#primary:disabled {{ background: #26374f; color: #71839e; }}
 
 QPushButton#danger {{
     background: transparent; border: 1px solid {BAD}; color: {BAD};

@@ -1,8 +1,8 @@
 <svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#1a241b"/>
-      <stop offset="1" stop-color="#0c110c"/>
+      <stop offset="0" stop-color="#1a2435"/>
+      <stop offset="1" stop-color="#0c1017"/>
     </linearGradient>
     <linearGradient id="cac" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#6fdc6f"/>
@@ -11,7 +11,7 @@
   </defs>
 
   <rect x="8" y="8" width="240" height="240" rx="52" fill="url(#bg)"/>
-  <rect x="8.5" y="8.5" width="239" height="239" rx="51.5" fill="none" stroke="#2c3a2e" stroke-width="1"/>
+  <rect x="8.5" y="8.5" width="239" height="239" rx="51.5" fill="none" stroke="#2a3850" stroke-width="1"/>
 
   <!-- Maceta -->
   <path d="M96 196 h64 l-8 34 a6 6 0 0 1 -6 5 h-36 a6 6 0 0 1 -6 -5 z" fill="#b5651d"/>
