@@ -2,19 +2,19 @@
 
 # Base neutra compartida con el GUI del Proxmark (misma familia visual);
 # aquí el acento es verde en lugar de azul.
-BG = "#0e141d"           # fondo general
-PANEL = "#151d2a"        # paneles
-PANEL_2 = "#1c2736"      # elementos elevados
-BORDER = "#2a3850"
-TEXT = "#e8eef7"
-MUTED = "#8a99b3"
-ACCENT = "#5ac85a"       # verde cactus (color principal de esta app)
-ACCENT_DK = "#46a846"
-CONSOLE_BG = "#0a0f17"
-CONSOLE_TEXT = "#c6edc6"   # verde claro para la consola
-OK = "#5ac85a"           # "conectado" en el verde principal
-BAD = "#ef5f5f"          # error
-WARN = "#f0a63a"         # aviso
+BG = "#000000"           # fondo general
+PANEL = "#0c0c0c"        # paneles
+PANEL_2 = "#161616"      # elementos elevados
+BORDER = "#2b2b2b"
+TEXT = "#f4f4f4"
+MUTED = "#8c8c8c"
+ACCENT = "#ffffff"       # verde cactus (color principal de esta app)
+ACCENT_DK = "#cccccc"
+CONSOLE_BG = "#000000"
+CONSOLE_TEXT = "#e8e8e8"   # verde claro para la consola
+OK = "#ffffff"           # "conectado" en el verde principal
+BAD = "#d7d7d7"          # error
+WARN = "#a8a8a8"         # aviso
 
 STYLESHEET = f"""
 * {{
@@ -29,8 +29,8 @@ QLabel#title {{ font-size: 17px; font-weight: 700; color: {TEXT}; }}
 QLabel#subtitle {{ color: {MUTED}; font-size: 12px; }}
 
 QFrame#banner {{
-    background: rgba(245,166,35,0.10);
-    border: 1px solid rgba(245,166,35,0.45);
+    background: rgba(175, 175, 175,0.10);
+    border: 1px solid rgba(175, 175, 175,0.45);
     border-radius: 8px;
 }}
 QLabel#bannerText {{ color: {WARN}; font-size: 12px; }}
@@ -55,20 +55,20 @@ QPushButton {{
     padding: 8px 12px;
     color: {TEXT};
 }}
-QPushButton:hover {{ border-color: {ACCENT}; background: #233041; }}
-QPushButton:pressed {{ background: #2a3a4d; }}
+QPushButton:hover {{ border-color: {ACCENT}; background: #2e2e2e; }}
+QPushButton:pressed {{ background: #373737; }}
 QPushButton:disabled {{ color: {MUTED}; background: {PANEL}; }}
 
 QPushButton#primary {{
-    background: {ACCENT}; color: #06120a; font-weight: 700; border: none;
+    background: {ACCENT}; color: #0e0e0e; font-weight: 700; border: none;
 }}
 QPushButton#primary:hover {{ background: {ACCENT_DK}; }}
-QPushButton#primary:disabled {{ background: #26374f; color: #71839e; }}
+QPushButton#primary:disabled {{ background: #353535; color: #818181; }}
 
 QPushButton#danger {{
     background: transparent; border: 1px solid {BAD}; color: {BAD};
 }}
-QPushButton#danger:hover {{ background: rgba(239,83,80,0.12); }}
+QPushButton#danger:hover {{ background: rgba(129, 129, 129,0.12); }}
 
 QPlainTextEdit, QTextEdit {{
     background: {CONSOLE_BG};
